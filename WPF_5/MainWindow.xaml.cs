@@ -28,9 +28,9 @@ namespace WPF_5
 
             //新增教師資料及所授課程
             Teacher teacher1 = new Teacher("陳定宏");
-            teacher1.TeachingCourse.Add(new Course { CourseName ="視窗程式設計",OpeningClass ="四技資工二甲",Point = 3, Tutor=teacher1,Type="選修"});
-            teacher1.TeachingCourse.Add(new Course { CourseName = "網頁程式設計", OpeningClass = "四技資工二乙", Point = 3, Tutor = teacher1, Type = "選修" });
-            teacher1.TeachingCourse.Add(new Course { CourseName = "資料庫系統", OpeningClass = "四技資工二丙", Point = 3, Tutor = teacher1, Type = "必修" });
+            teacher1.TeachingCourse.Add(new Course { CourseName ="視窗程式設計",OpeningClass ="四技資工二乙",Point = 3, Tutor=teacher1,Type="選修"});
+            teacher1.TeachingCourse.Add(new Course { CourseName = "視窗程式設計", OpeningClass = "四技資工三甲", Point = 3, Tutor = teacher1, Type = "選修" });
+            teacher1.TeachingCourse.Add(new Course { CourseName = "資料庫系統", OpeningClass = "四技資工二甲", Point = 3, Tutor = teacher1, Type = "必修" });
             teachers.Add(teacher1);
 
             Teacher teacher2 = new Teacher("張財榮");
@@ -46,6 +46,16 @@ namespace WPF_5
             teachers.Add(teacher3);
 
             tvTeacher.ItemsSource = teachers;
+
+            foreach(Teacher teacher in teachers)
+            {
+                foreach (Course course in teacher.TeachingCourse)
+                {
+                    courses.Add(course);
+                }
+            }
+
+            lbCourse.ItemsSource = courses;
         }
     }
 }
