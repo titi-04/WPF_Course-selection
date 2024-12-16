@@ -78,7 +78,7 @@
                 </ListBox>
             </TabItem>
         </TabControl>
-        <ListView x:Name="lvRecord" Grid.Column="2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Background="#FFD69EF7">
+        <ListView x:Name="lvRecord" Grid.Column="2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Background="#FFD69EF7" FontFamily="DFKai-SB" FontSize="14">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
