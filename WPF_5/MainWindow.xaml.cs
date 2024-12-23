@@ -1,4 +1,10 @@
-﻿using System.Windows;
+﻿using Microsoft.Win32;
+using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using System.Windows;
 
 namespace WPF_5
 {
@@ -36,7 +42,7 @@ namespace WPF_5
 
             //新增教師資料以及所授課程
             Teacher teacher1 = new Teacher("陳定宏");
-            teacher1.TeachingCourse.Add(new Course { CourseName ="視窗程式設計",OpeningClass ="四技資工二乙",Point = 3, Tutor=teacher1,Type="選修"});
+            teacher1.TeachingCourse.Add(new Course { CourseName = "視窗程式設計", OpeningClass = "四技資工二乙", Point = 3, Tutor = teacher1, Type = "選修" });
             teacher1.TeachingCourse.Add(new Course { CourseName = "視窗程式設計", OpeningClass = "四技資工三甲", Point = 3, Tutor = teacher1, Type = "選修" });
             teacher1.TeachingCourse.Add(new Course { CourseName = "資料庫系統", OpeningClass = "四技資工二甲", Point = 3, Tutor = teacher1, Type = "必修" });
             teachers.Add(teacher1);//將教師資料加入教師清單
@@ -88,11 +94,11 @@ namespace WPF_5
                 MessageBox.Show("請選取學生或課程");
                 return;
             }
-            else 
+            else
             {
                 Record record = new Record()//建立選課紀錄
                 {
-                    SelectedStudent = selectedStudent, 
+                    SelectedStudent = selectedStudent,
                     SelectedCourse = selectedCourse//將選取的學生和課程存入選課紀錄
                 };
 
@@ -121,6 +127,42 @@ namespace WPF_5
         {
             selectedCourse = lbCourse.SelectedItem as Course;//將選取的課程資料存入selectedCourse
             statusLable.Content = $"選取課程：{selectedCourse.CourseName}";//顯示選取的課程名稱
+        }
+
+        private void lvRecord_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            selectedRecord = lvRecord.SelectedItem as Record;//將選取的選課紀錄資料存入selectedRecord
+            statusLable.Content = $"選取選課紀錄：{selectedRecord}";//顯示選取的選課紀錄
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            //如果有選課資料
+            if (selectedRecord != null)
+            {
+                records.Remove(selectedRecord);//移除選取的選課紀錄
+                lvRecord.ItemsSource = records;//將選課紀錄清單連結至lvRecord
+                lvRecord.Items.Refresh();//重新整理lvRecord
+            }
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Json Files (*.json)|*.json|All Files (*.*)|*.*";//設定檔案類型
+            saveFileDialog.DefaultExt = "json";//設定預設檔案類型
+            saveFileDialog.AddExtension = true;//加入副檔名
+            if (saveFileDialog.ShowDialog() == true)//如果選取檔案
+            {
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),//設定編碼
+                    WriteIndented = true,//設定縮排
+                    ReferenceHandler = ReferenceHandler.Preserve//設定參考處理
+                };
+                string jsonString = JsonSerializer.Serialize(records, options);//將選課紀錄清單轉換成Json格式 JsonSerializer序列化物件
+                File.WriteAllText(saveFileDialog.FileName, jsonString);//將Json格式的資料寫入檔案
+            }
         }
     }
 }
